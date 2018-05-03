@@ -1,8 +1,10 @@
-package com.artemiishabanov.boxes;
+package com.artemiishabanov.boxes.Controller;
 
 import com.artemiishabanov.boxes.domain.Item;
+import com.artemiishabanov.boxes.domain.User;
 import com.artemiishabanov.boxes.repos.ItemRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,17 +14,16 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class GreetingController {
+public class MainController {
     @Autowired
     private ItemRepo itemRepo;
 
-    @GetMapping("/greeting")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Map<String, Object> model) {
-        model.put("name", name);
+    @GetMapping("/")
+    public String greeting(Map<String, Object> model) {
         return "greeting";
     }
 
-    @GetMapping
+    @GetMapping("/main")
     public String main(Map<String, Object> model) {
         Iterable<Item> items = itemRepo.findAll();
 
@@ -30,9 +31,9 @@ public class GreetingController {
         return "main";
     }
 
-    @PostMapping("add")
-    public String add(@RequestParam String name, @RequestParam String color, Map<String, Object> model) {
-        Item item = new Item(name, color);
+    @PostMapping("/main")
+    public String add(@AuthenticationPrincipal User user, @RequestParam String name, @RequestParam String color, Map<String, Object> model) {
+        Item item = new Item(name, color, user);
 
         itemRepo.save(item);
 

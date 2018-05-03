@@ -1,9 +1,6 @@
 package com.artemiishabanov.boxes.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Item {
@@ -14,13 +11,30 @@ public class Item {
     private String name;
     private String color;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User owner;
 
     public Item() {
     }
 
-    public Item(String name, String color) {
+    public Item(String name, String color, User user) {
+        this.owner = user;
         this.name = name;
         this.color = color;
+    }
+
+    public String getOwnerName() {
+        return owner.getUsername();
+    }
+
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public Integer getId() {
